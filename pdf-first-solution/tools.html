@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Use PDF First Solution tools for conversion, compression, splitting, and more." />
+    <title>PDF Tools | PDF First Solution</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container nav-bar">
+        <a class="brand" href="index.html" aria-label="PDF First Solution home">
+          <span class="brand-mark">PDF</span>
+          <span class="brand-text">First Solution</span>
+        </a>
+        <nav class="nav-links" aria-label="Primary navigation">
+          <a href="index.html#tools">Tools</a>
+          <a href="index.html#process">How it works</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="tool-page">
+      <div class="container tool-shell">
+        <section class="tool-intro">
+          <p class="eyebrow">Professional PDF workflow</p>
+          <h1 id="tool-title">PDF to Pixel Converter</h1>
+          <p id="tool-description">Upload a file to begin your conversion workflow.</p>
+        </section>
+
+        <div class="tool-layout">
+          <section class="upload-card" aria-labelledby="upload-heading">
+            <h2 id="upload-heading">Upload your file</h2>
+            <p>Drag and drop or click to upload your document. The workspace is designed to be fast and simple.</p>
+
+            <label class="dropzone" for="fileInput">
+              <input id="fileInput" type="file" />
+              <p class="dropzone-title">Drop files here or click to browse</p>
+              <p>Supports PDF and image uploads for every tool</p>
+            </label>
+
+            <div id="upload-meta" class="upload-meta">No file selected yet.</div>
+            <button id="processBtn" class="btn btn-primary" type="button">Start processing</button>
+          </section>
+
+          <section class="workflow-card" aria-labelledby="workflow-heading">
+            <h2 id="workflow-heading">Progress and results</h2>
+            <div class="steps-list" aria-label="Workflow steps">
+              <div class="step active">1. Upload your file</div>
+              <div class="step">2. Process your request</div>
+              <div class="step">3. Download your result</div>
+            </div>
+
+            <div class="progress-track" aria-label="Processing progress">
+              <div id="progressBar" class="progress-bar"></div>
+            </div>
+
+            <div id="resultBox" class="result-box hidden">
+              <h3>Ready to download</h3>
+              <p id="resultText">Your result is prepared.</p>
+              <a id="downloadBtn" class="btn btn-secondary" href="#">Download file</a>
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>

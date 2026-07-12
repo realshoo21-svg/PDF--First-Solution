@@ -1,0 +1,181 @@
+const toolMeta = {
+  "pdf-to-pixel": {
+    title: "PDF to Pixel Converter",
+    description: "Upload a PDF and turn it into a clean pixel-based rendering for quick sharing and display.",
+    accepted: ".pdf",
+    resultLabel: "pixel-render"
+  },
+  "pixel-to-pdf": {
+    title: "Pixel to PDF Converter",
+    description: "Convert screenshots, photos, or drawings into a polished PDF document.",
+    accepted: "image/*",
+    resultLabel: "image-pdf"
+  },
+  "pdf-splitter": {
+    title: "PDF Splitter",
+    description: "Break larger documents into smaller, neatly separated files.",
+    accepted: ".pdf",
+    resultLabel: "split-pdf"
+  },
+  "pdf-merger": {
+    title: "PDF Merger",
+    description: "Combine multiple files into one organized PDF package.",
+    accepted: ".pdf",
+    resultLabel: "merged-pdf"
+  },
+  "pdf-compressor": {
+    title: "PDF Compressor",
+    description: "Reduce file size quickly without losing readability.",
+    accepted: ".pdf",
+    resultLabel: "compressed-pdf"
+  },
+  "pdf-to-image": {
+    title: "PDF to Image Converter",
+    description: "Export each PDF page into crisp image files for presentations or web use.",
+    accepted: ".pdf",
+    resultLabel: "pdf-images"
+  },
+  "image-to-pdf": {
+    title: "Image to PDF Converter",
+    description: "Turn your photos and scanned pages into a professional PDF file.",
+    accepted: "image/*",
+    resultLabel: "image-pdf"
+  },
+  "pdf-rotation": {
+    title: "PDF Rotation Tool",
+    description: "Rotate pages into the correct orientation with minimal effort.",
+    accepted: ".pdf",
+    resultLabel: "rotated-pdf"
+  },
+  "pdf-page-extractor": {
+    title: "PDF Page Extractor",
+    description: "Select and export the exact pages you need from a larger document.",
+    accepted: ".pdf",
+    resultLabel: "extracted-pages"
+  },
+  "pdf-utilities": {
+    title: "Other PDF Utilities",
+    description: "Unlock, watermark, and organize your PDF documents with confidence.",
+    accepted: ".pdf",
+    resultLabel: "pdf-utilities"
+  }
+};
+
+const params = new URLSearchParams(window.location.search);
+const activeTool = params.get("tool") || "pdf-to-pixel";
+const tool = toolMeta[activeTool] || toolMeta["pdf-to-pixel"];
+
+const titleEl = document.getElementById("tool-title");
+const descriptionEl = document.getElementById("tool-description");
+const dropzone = document.getElementById("dropzone");
+const fileInput = document.getElementById("fileInput");
+const uploadMeta = document.getElementById("upload-meta");
+const processBtn = document.getElementById("processBtn");
+const resultBox = document.getElementById("resultBox");
+const resultText = document.getElementById("resultText");
+const downloadBtn = document.getElementById("downloadBtn");
+const progressBar = document.getElementById("progressBar");
+const stepEls = Array.from(document.querySelectorAll(".step"));
+
+if (titleEl) {
+  titleEl.textContent = tool.title;
+}
+
+if (descriptionEl) {
+  descriptionEl.textContent = tool.description;
+}
+
+if (dropzone && fileInput) {
+  dropzone.setAttribute("data-accept", tool.accepted);
+  dropzone.addEventListener("click", () => fileInput.click());
+  fileInput.setAttribute("accept", tool.accepted);
+}
+
+let selectedFile = null;
+let downloadUrl = null;
+
+function updateUploadMeta(file) {
+  if (!uploadMeta) return;
+  uploadMeta.innerHTML = `Selected file: <strong>${file.name}</strong> (${(file.size / 1024).toFixed(1)} KB)`;
+}
+
+function setStep(index, state) {
+  stepEls.forEach((step, idx) => {
+    step.classList.remove("active", "done");
+    if (idx < index) {
+      step.classList.add("done");
+    } else if (idx === index) {
+      step.classList.add("active");
+    }
+  });
+}
+
+function resetSteps() {
+  setStep(0, "active");
+  progressBar.style.width = "0%";
+  resultBox.classList.add("hidden");
+  if (downloadUrl) {
+    URL.revokeObjectURL(downloadUrl);
+    downloadUrl = null;
+  }
+}
+
+if (fileInput) {
+  fileInput.addEventListener("change", (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    selectedFile = file;
+    updateUploadMeta(file);
+    resetSteps();
+  });
+}
+
+if (dropzone) {
+  ["dragenter", "dragover"].forEach((eventName) => {
+    dropzone.addEventListener(eventName, (event) => {
+      event.preventDefault();
+      dropzone.style.borderColor = "#a71e1e";
+    });
+  });
+
+  ["dragleave", "drop"].forEach((eventName) => {
+    dropzone.addEventListener(eventName, (event) => {
+      event.preventDefault();
+      dropzone.style.borderColor = "#d62828";
+    });
+  });
+
+  dropzone.addEventListener("drop", (event) => {
+    const file = event.dataTransfer?.files?.[0];
+    if (!file) return;
+    selectedFile = file;
+    updateUploadMeta(file);
+    resetSteps();
+  });
+}
+
+if (processBtn) {
+  processBtn.addEventListener("click", () => {
+    if (!selectedFile) {
+      uploadMeta.innerHTML = "Please choose a file first so the workflow can begin.";
+      return;
+    }
+
+    setStep(1, "active");
+    progressBar.style.width = "35%";
+
+    window.setTimeout(() => {
+      setStep(2, "active");
+      progressBar.style.width = "100%";
+      resultText.textContent = `${tool.title} is ready for download. Your processed file is prepared for quick use.`;
+      resultBox.classList.remove("hidden");
+
+      const blob = new Blob([`Processed by ${tool.title}\nFile: ${selectedFile.name}`], { type: "text/plain" });
+      downloadUrl = URL.createObjectURL(blob);
+      downloadBtn.href = downloadUrl;
+      downloadBtn.download = `${tool.resultLabel}.txt`;
+    }, 1400);
+  });
+}
+
+resetSteps();
