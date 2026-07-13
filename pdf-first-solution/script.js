@@ -109,7 +109,69 @@ function setStep(index, state) {
     }
   });
 }
+async function pdfToImage(file) {
+  const arrayBuffer = await file.arrayBuffer();
 
+  const pdf = await pdfjsLib.getDocument({
+    data: arrayBuffer
+  }).promise;
+
+  const page = await pdf.getPage(1);
+
+  const viewport = page.getViewport({ scale: 2 });
+
+  const canvas = document.createElement("canvas");
+  const context = canvas.getContext("2d");
+
+  canvas.width = viewport.width;
+  canvas.height = viewport.height;
+
+  await page.render({
+    canvasContext: context,
+    viewport: viewport
+  }).promise;
+
+  return new Promise((resolve) => {
+    canvas.toBlob((blob) => {
+      resolve(blob);
+    }, "image/png");
+  });
+}
+
+async function imageToPdf(file) {
+  const { jsPDF } = window.jspdf;
+
+  const pdf = new jsPDF();
+
+  const imgUrl = URL.createObjectURL(file);
+
+  return new Promise((resolve) => {
+    const img = new Image();
+
+    img.onload = () => {
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight =
+        (img.height * pageWidth) / img.width;
+
+      pdf.addImage(
+        img,
+        "JPEG",
+        0,
+        0,
+        pageWidth,
+        pageHeight
+      );
+
+      const blob = pdf.output("blob");
+
+      URL.revokeObjectURL(imgUrl);
+
+      resolve(blob);
+    };
+
+    img.src = imgUrl;
+  });
+}
 function resetSteps() {
   setStep(0, "active");
   progressBar.style.width = "0%";
@@ -160,21 +222,71 @@ if (processBtn) {
       uploadMeta.innerHTML = "Please choose a file first so the workflow can begin.";
       return;
     }
+(async () => {
 
-    setStep(1, "active");
-    progressBar.style.width = "35%";
+  try {
 
-    window.setTimeout(() => {
-      setStep(2, "active");
-      progressBar.style.width = "100%";
-      resultText.textContent = `${tool.title} is ready for download. Your processed file is prepared for quick use.`;
-      resultBox.classList.remove("hidden");
+    let outputBlob;
 
-      const blob = new Blob([`Processed by ${tool.title}\nFile: ${selectedFile.name}`], { type: "text/plain" });
-      downloadUrl = URL.createObjectURL(blob);
+    if (
+      activeTool === "pdf-to-image" ||
+      activeTool === "pdf-to-pixel"
+    ) {
+
+      outputBlob = await pdfToImage(selectedFile);
+
+      downloadUrl =
+        URL.createObjectURL(outputBlob);
+
       downloadBtn.href = downloadUrl;
-      downloadBtn.download = `${tool.resultLabel}.txt`;
-    }, 1400);
+      downloadBtn.download = "converted-image.png";
+    }
+
+    else if (
+      activeTool === "image-to-pdf" ||
+      activeTool === "pixel-to-pdf"
+    ) {
+
+      outputBlob =
+        await imageToPdf(selectedFile);
+
+      downloadUrl =
+        URL.createObjectURL(outputBlob);
+
+      downloadBtn.href = downloadUrl;
+      downloadBtn.download = "converted.pdf";
+    }
+
+    else {
+
+      throw new Error(
+        "This tool will be enabled in next update."
+      );
+    }
+
+    setStep(2);
+
+    progressBar.style.width = "100%";
+
+    resultText.textContent =
+      "Processing completed successfully.";
+
+    resultBox.classList.remove("hidden");
+
+  }
+
+  catch (error) {
+
+    console.error(error);
+
+    resultText.textContent =
+      error.message;
+
+    resultBox.classList.remove("hidden");
+  }
+
+})();
+    
   });
 }
 
