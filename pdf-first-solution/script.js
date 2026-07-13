@@ -174,11 +174,20 @@ async function imageToPdf(file) {
 }
 function resetSteps() {
   setStep(0, "active");
-  progressBar.style.width = "0%";
-  resultBox.classList.add("hidden");
+
+  if (progressBar) {
+    progressBar.style.width = "0%";
+  }
+
+  if (resultBox) {
+    resultBox.classList.add("hidden");
+  }
+
   if (downloadUrl) {
     URL.revokeObjectURL(downloadUrl);
     downloadUrl = null;
+  }
+}
   }
 }
 
@@ -290,4 +299,7 @@ if (processBtn) {
   });
 }
 
-resetSteps();
+
+if (document.getElementById("progressBar")) {
+  resetSteps();
+}
