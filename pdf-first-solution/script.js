@@ -332,14 +332,19 @@ if (processBtn) {
   downloadBtn.download = "merged.pdf";
 }
       
-   else if (
+    else if (
   activeTool === "pdf-splitter"
 ) {
 
-  const pagesPerSplit =
+  const startPage =
     parseInt(
-      document.getElementById("pagesPerSplit").value
-    ) || 1;
+      document.getElementById("startPage").value
+    );
+
+  const endPage =
+    parseInt(
+      document.getElementById("endPage").value
+    );
 
   const pdfDoc =
     await PDFLib.PDFDocument.load(
@@ -349,18 +354,33 @@ if (processBtn) {
   const totalPages =
     pdfDoc.getPageCount();
 
+  if (
+    startPage < 1 ||
+    endPage > totalPages ||
+    startPage > endPage
+  ) {
+    throw new Error(
+      `Please enter pages between 1 and ${totalPages}`
+    );
+  }
+
   const newPdf =
     await PDFLib.PDFDocument.create();
+
+  const pageIndexes = [];
+
+  for (
+    let i = startPage - 1;
+    i <= endPage - 1;
+    i++
+  ) {
+    pageIndexes.push(i);
+  }
 
   const pages =
     await newPdf.copyPages(
       pdfDoc,
-      [...Array(
-        Math.min(
-          pagesPerSplit,
-          totalPages
-        )
-      ).keys()]
+      pageIndexes
     );
 
   pages.forEach(page =>
@@ -384,8 +404,8 @@ if (processBtn) {
     downloadUrl;
 
   downloadBtn.download =
-    "split.pdf";
-}   
+    `pages-${startPage}-${endPage}.pdf`;
+}
 
     else {
 
