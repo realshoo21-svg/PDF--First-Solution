@@ -196,6 +196,25 @@ async function mergePdfs(files) {
     { type: "application/pdf" }
   );
 }
+async function splitPdf(file) {
+
+  const bytes = await file.arrayBuffer();
+
+  const pdf = await PDFLib.PDFDocument.load(bytes);
+
+  const newPdf = await PDFLib.PDFDocument.create();
+
+  const [page] = await newPdf.copyPages(pdf, [0]);
+
+  newPdf.addPage(page);
+
+  const pdfBytes = await newPdf.save();
+
+  return new Blob(
+    [pdfBytes],
+    { type: "application/pdf" }
+  );
+}
 function resetSteps() {
   setStep(0, "active");
 
@@ -303,6 +322,22 @@ if (processBtn) {
 
   downloadBtn.download = "merged.pdf";
 }
+    else if (
+  activeTool === "pdf-splitter"
+) {
+
+  outputBlob =
+    await splitPdf(selectedFile);
+
+  downloadUrl =
+    URL.createObjectURL(outputBlob);
+
+  downloadBtn.href =
+    downloadUrl;
+
+  downloadBtn.download =
+    "page-1.pdf";
+}    
 
     else {
 
