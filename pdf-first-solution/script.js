@@ -91,26 +91,6 @@ if (dropzone && fileInput) {
   fileInput.setAttribute("accept", tool.accepted);
 }
 
-const splitOptions =
-  document.getElementById("toolOptions");
-
-if (
-  activeTool === "pdf-splitter" &&
-  splitOptions
-) {
-  splitOptions.style.display = "block";
-
-  splitOptions.innerHTML = `
-    <label>Pages per PDF:</label>
-    <input
-      type="number"
-      id="pagesPerSplit"
-      min="1"
-      value="1"
-    >
-  `;
-}
-
 let selectedFile = null;
 let downloadUrl = null;
 
