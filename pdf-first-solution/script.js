@@ -357,6 +357,60 @@ if (processBtn) {
   downloadBtn.download =
     "page-1.pdf";
 }    
+   else if (
+  activeTool === "pdf-splitter"
+) {
+
+  const pagesPerSplit =
+    parseInt(
+      document.getElementById("pagesPerSplit").value
+    ) || 1;
+
+  const pdfDoc =
+    await PDFLib.PDFDocument.load(
+      await selectedFile.arrayBuffer()
+    );
+
+  const totalPages =
+    pdfDoc.getPageCount();
+
+  const newPdf =
+    await PDFLib.PDFDocument.create();
+
+  const pages =
+    await newPdf.copyPages(
+      pdfDoc,
+      [...Array(
+        Math.min(
+          pagesPerSplit,
+          totalPages
+        )
+      ).keys()]
+    );
+
+  pages.forEach(page =>
+    newPdf.addPage(page)
+  );
+
+  const pdfBytes =
+    await newPdf.save();
+
+  outputBlob = new Blob(
+    [pdfBytes],
+    {
+      type: "application/pdf"
+    }
+  );
+
+  downloadUrl =
+    URL.createObjectURL(outputBlob);
+
+  downloadBtn.href =
+    downloadUrl;
+
+  downloadBtn.download =
+    "split.pdf";
+}   
 
     else {
 
