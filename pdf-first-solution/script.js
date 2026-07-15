@@ -187,9 +187,9 @@ function resetSteps() {
     URL.revokeObjectURL(downloadUrl);
     downloadUrl = null;
   }
-}
+
   }
-}
+
 
 if (fileInput) {
   fileInput.addEventListener("change", (event) => {
