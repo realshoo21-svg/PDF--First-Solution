@@ -342,22 +342,7 @@ if (processBtn) {
 
   downloadBtn.download = "merged.pdf";
 }
-    else if (
-  activeTool === "pdf-splitter"
-) {
-
-  outputBlob =
-    await splitPdf(selectedFile);
-
-  downloadUrl =
-    URL.createObjectURL(outputBlob);
-
-  downloadBtn.href =
-    downloadUrl;
-
-  downloadBtn.download =
-    "page-1.pdf";
-}    
+      
    else if (
   activeTool === "pdf-splitter"
 ) {
