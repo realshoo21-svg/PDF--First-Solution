@@ -90,6 +90,15 @@ if (dropzone && fileInput) {
   dropzone.addEventListener("click", () => fileInput.click());
   fileInput.setAttribute("accept", tool.accepted);
 }
+const splitOptions =
+  document.getElementById("splitOptions");
+
+if (
+  activeTool === "pdf-splitter" &&
+  splitOptions
+) {
+  splitOptions.style.display = "block";
+}
 
 let selectedFile = null;
 let downloadUrl = null;
