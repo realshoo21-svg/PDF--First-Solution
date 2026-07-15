@@ -140,7 +140,6 @@ async function pdfToImage(file) {
 
 async function imageToPdf(file) {
   const { jsPDF } = window.jspdf;
-
   const pdf = new jsPDF();
 
   const imgUrl = URL.createObjectURL(file);
@@ -152,7 +151,6 @@ async function imageToPdf(file) {
       const pageWidth = pdf.internal.pageSize.getWidth();
       const pageHeight =
         (img.height * pageWidth) / img.width;
-
       pdf.addImage(
         img,
         "JPEG",
@@ -165,12 +163,38 @@ async function imageToPdf(file) {
       const blob = pdf.output("blob");
 
       URL.revokeObjectURL(imgUrl);
-
       resolve(blob);
     };
 
     img.src = imgUrl;
   });
+}
+async function mergePdfs(files) {
+
+  const mergedPdf = await PDFLib.PDFDocument.create();
+
+  for (const file of files) {
+
+    const bytes = await file.arrayBuffer();
+
+    const pdf = await PDFLib.PDFDocument.load(bytes);
+
+    const pages = await mergedPdf.copyPages(
+      pdf,
+      pdf.getPageIndices()
+    );
+
+    pages.forEach(page => {
+      mergedPdf.addPage(page);
+    });
+  }
+
+  const mergedBytes = await mergedPdf.save();
+
+  return new Blob(
+    [mergedBytes],
+    { type: "application/pdf" }
+  );
 }
 function resetSteps() {
   setStep(0, "active");
@@ -265,6 +289,20 @@ if (processBtn) {
       downloadBtn.href = downloadUrl;
       downloadBtn.download = "converted.pdf";
     }
+      else if (
+  activeTool === "pdf-merger"
+) {
+
+  const files = Array.from(fileInput.files);
+
+  outputBlob = await mergePdfs(files);
+
+  downloadUrl = URL.createObjectURL(outputBlob);
+
+  downloadBtn.href = downloadUrl;
+
+  downloadBtn.download = "merged.pdf";
+}
 
     else {
 
@@ -286,12 +324,14 @@ if (processBtn) {
 
   catch (error) {
 
-    console.error(error);
+  console.error(error);
 
-    resultText.textContent =
-      error.message;
+  alert(error.message);
 
-    resultBox.classList.remove("hidden");
+  resultText.textContent = error.message;
+
+  resultBox.classList.remove("hidden");
+
   }
 
 })();
