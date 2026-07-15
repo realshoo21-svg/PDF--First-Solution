@@ -90,6 +90,7 @@ if (dropzone && fileInput) {
   dropzone.addEventListener("click", () => fileInput.click());
   fileInput.setAttribute("accept", tool.accepted);
 }
+
 const splitOptions =
   document.getElementById("toolOptions");
 
@@ -107,6 +108,7 @@ if (
       min="1"
       value="1"
     >
+    </div>
   `;
 }
 
