@@ -335,7 +335,8 @@ if (processBtn) {
     else if (
   activeTool === "pdf-splitter"
 ) {
-
+  console.log(document.getElementById("startPage"));
+console.log(document.getElementById("endPage"));
   const startPage =
     parseInt(
       document.getElementById("startPage").value
