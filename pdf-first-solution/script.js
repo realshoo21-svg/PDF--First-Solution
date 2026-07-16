@@ -99,7 +99,15 @@ if (
 ) {
   splitOptions.style.display = "block";
 }
+const rotateOptions =
+  document.getElementById("rotateOptions");
 
+if (
+  activeTool === "pdf-rotation" &&
+  rotateOptions
+) {
+  rotateOptions.style.display = "block";
+}
 let selectedFile = null;
 let downloadUrl = null;
 
