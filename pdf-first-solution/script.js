@@ -574,20 +574,6 @@ outputBlob =
   activeTool === "pdf-compressor"
 ) {
 
-  outputBlob = selectedFile;
-
-  downloadUrl =
-    URL.createObjectURL(outputBlob);
-
-  downloadBtn.href =
-    downloadUrl;
-
-  downloadBtn.download =
-    "compressed.pdf";
-}else if (
-  activeTool === "pdf-compressor"
-) {
-
   outputBlob =
     await compressPdf(selectedFile);
 
