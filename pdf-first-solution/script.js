@@ -547,6 +547,21 @@ outputBlob =
   downloadBtn.download =
     "extracted-pages.pdf";
 }
+    else if (
+  activeTool === "pdf-compressor"
+) {
+
+  outputBlob = selectedFile;
+
+  downloadUrl =
+    URL.createObjectURL(outputBlob);
+
+  downloadBtn.href =
+    downloadUrl;
+
+  downloadBtn.download =
+    "compressed.pdf";
+}
     else {
 
       throw new Error(
