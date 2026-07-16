@@ -52,12 +52,6 @@ const toolMeta = {
     description: "Select and export the exact pages you need from a larger document.",
     accepted: ".pdf",
     resultLabel: "extracted-pages"
-  },
-  "pdf-utilities": {
-    title: "Other PDF Utilities",
-    description: "Unlock, watermark, and organize your PDF documents with confidence.",
-    accepted: ".pdf",
-    resultLabel: "pdf-utilities"
   }
 };
 
