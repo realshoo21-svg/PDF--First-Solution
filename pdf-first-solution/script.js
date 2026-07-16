@@ -64,7 +64,17 @@ const toolMeta = {
 const params = new URLSearchParams(window.location.search);
 const activeTool = params.get("tool") || "pdf-to-pixel";
 const tool = toolMeta[activeTool] || toolMeta["pdf-to-pixel"];
+window.addEventListener("DOMContentLoaded", () => {
+  const splitOptions =
+    document.getElementById("splitOptions");
 
+  if (splitOptions) {
+    splitOptions.style.display =
+      activeTool === "pdf-page-extractor"
+        ? "block"
+        : "none";
+  }
+});
 const titleEl = document.getElementById("tool-title");
 const descriptionEl = document.getElementById("tool-description");
 const dropzone = document.getElementById("dropzone");
