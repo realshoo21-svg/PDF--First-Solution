@@ -315,6 +315,29 @@ async function extractPages(file, pages) {
     { type: "application/pdf" }
   );
 }
+async function compressPdf(file) {
+  const bytes = await file.arrayBuffer();
+
+  const pdf = await PDFLib.PDFDocument.load(bytes);
+
+  const newPdf = await PDFLib.PDFDocument.create();
+
+  const pages = await newPdf.copyPages(
+    pdf,
+    pdf.getPageIndices()
+  );
+
+  pages.forEach(page => newPdf.addPage(page));
+
+  const compressedBytes = await newPdf.save({
+    useObjectStreams: true
+  });
+
+  return new Blob(
+    [compressedBytes],
+    { type: "application/pdf" }
+  );
+}
 
 function resetSteps() {
   setStep(0, "active");
@@ -561,7 +584,23 @@ outputBlob =
 
   downloadBtn.download =
     "compressed.pdf";
+}else if (
+  activeTool === "pdf-compressor"
+) {
+
+  outputBlob =
+    await compressPdf(selectedFile);
+
+  downloadUrl =
+    URL.createObjectURL(outputBlob);
+
+  downloadBtn.href =
+    downloadUrl;
+
+  downloadBtn.download =
+    "compressed.pdf";
 }
+      
     else {
 
       throw new Error(
