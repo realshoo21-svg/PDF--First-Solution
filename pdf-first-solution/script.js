@@ -103,10 +103,7 @@ if (dropzone && fileInput) {
 const splitOptions =
   document.getElementById("splitOptions");
 
-if (
-  activeTool === "pdf-splitter" &&
-  splitOptions
-) {
+if (splitOptions && activeTool === "pdf-page-extractor") {
   splitOptions.style.display = "block";
 }
 const rotateOptions =
