@@ -248,8 +248,7 @@ async function mergePdfs(files) {
     }
   );
 }    
-
-async function splitPdf(file) {
+async function splitPdf(file, startPage, endPage) {
 
   const bytes = await file.arrayBuffer();
 
@@ -257,17 +256,35 @@ async function splitPdf(file) {
 
   const newPdf = await PDFLib.PDFDocument.create();
 
-  const [page] = await newPdf.copyPages(pdf, [0]);
+  const pageIndexes = [];
 
-  newPdf.addPage(page);
+  for (
+    let i = startPage - 1;
+    i <= endPage - 1;
+    i++
+  ) {
+    pageIndexes.push(i);
+  }
 
-  const pdfBytes = await newPdf.save();
+  const pages =
+    await newPdf.copyPages(
+      pdf,
+      pageIndexes
+    );
+
+  pages.forEach(page => {
+    newPdf.addPage(page);
+  });
+
+  const pdfBytes =
+    await newPdf.save();
 
   return new Blob(
     [pdfBytes],
     { type: "application/pdf" }
   );
 }
+
 function resetSteps() {
   setStep(0, "active");
 
@@ -478,9 +495,18 @@ outputBlob =
   else if (
   activeTool === "pdf-page-extractor"
 ) {
+    const startPage =
+  parseInt(document.getElementById("startPage").value);
 
-  outputBlob =
-    await splitPdf(selectedFile);
+const endPage =
+  parseInt(document.getElementById("endPage").value);
+
+outputBlob =
+  await splitPdf(
+    selectedFile,
+    startPage,
+    endPage
+  );
 
   downloadUrl =
     URL.createObjectURL(outputBlob);
