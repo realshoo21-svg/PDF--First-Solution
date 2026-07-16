@@ -502,17 +502,16 @@ outputBlob =
   else if (
   activeTool === "pdf-page-extractor"
 ) {
-    const startPage =
-  parseInt(document.getElementById("startPage").value);
-
-const endPage =
-  parseInt(document.getElementById("endPage").value);
+  const pages =
+  document.getElementById("pageNumbers")
+    .value
+    .split(",")
+    .map(p => parseInt(p.trim()));
 
 outputBlob =
-  await splitPdf(
+  await extractPages(
     selectedFile,
-    startPage,
-    endPage
+    pages
   );
 
   downloadUrl =
