@@ -197,7 +197,15 @@ async function mergePdfs(files) {
       mergedPdf.addPage(page);
     });
   }
-  async function rotatePdf(file) {
+
+  const mergedBytes = await mergedPdf.save();
+
+  return new Blob(
+    [mergedBytes],
+    { type: "application/pdf" }
+  );
+}
+async function rotatePdf(file) {
 
   const bytes = await file.arrayBuffer();
 
@@ -218,14 +226,6 @@ async function mergePdfs(files) {
     {
       type: "application/pdf"
     }
-  );
-}
-
-  const mergedBytes = await mergedPdf.save();
-
-  return new Blob(
-    [mergedBytes],
-    { type: "application/pdf" }
   );
 }
 async function splitPdf(file) {
