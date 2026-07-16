@@ -475,6 +475,22 @@ outputBlob =
   downloadBtn.download =
     "rotated.pdf";
 }
+  else if (
+  activeTool === "pdf-page-extractor"
+) {
+
+  outputBlob =
+    await splitPdf(selectedFile);
+
+  downloadUrl =
+    URL.createObjectURL(outputBlob);
+
+  downloadBtn.href =
+    downloadUrl;
+
+  downloadBtn.download =
+    "extracted-pages.pdf";
+}
     else {
 
       throw new Error(
