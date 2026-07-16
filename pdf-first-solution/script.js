@@ -205,16 +205,17 @@ async function mergePdfs(files) {
     { type: "application/pdf" }
   );
 }
-async function rotatePdf(file) {
+  async function rotatePdf(file, angle) {
 
-  const bytes = await file.arrayBuffer();
+  const bytes =
+    await file.arrayBuffer();
 
   const pdfDoc =
     await PDFLib.PDFDocument.load(bytes);
 
   pdfDoc.getPages().forEach(page => {
     page.setRotation(
-      PDFLib.degrees(90)
+      PDFLib.degrees(angle)
     );
   });
 
@@ -227,7 +228,8 @@ async function rotatePdf(file) {
       type: "application/pdf"
     }
   );
-}
+}    
+
 async function splitPdf(file) {
 
   const bytes = await file.arrayBuffer();
@@ -434,9 +436,16 @@ console.log(document.getElementById("endPage"));
 else if (
   activeTool === "pdf-rotation"
 ) {
+  const angle =
+  parseInt(
+    document.getElementById("rotateAngle").value
+  );
 
-  outputBlob =
-    await rotatePdf(selectedFile);
+outputBlob =
+  await rotatePdf(
+    selectedFile,
+    angle
+  );
 
   downloadUrl =
     URL.createObjectURL(outputBlob);
