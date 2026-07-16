@@ -291,6 +291,30 @@ async function splitPdf(file, startPage, endPage) {
     { type: "application/pdf" }
   );
 }
+async function extractPages(file, pages) {
+  const bytes = await file.arrayBuffer();
+
+  const pdf = await PDFLib.PDFDocument.load(bytes);
+  const newPdf = await PDFLib.PDFDocument.create();
+
+  const pageIndexes = pages.map(p => p - 1);
+
+  const copiedPages = await newPdf.copyPages(
+    pdf,
+    pageIndexes
+  );
+
+  copiedPages.forEach(page => {
+    newPdf.addPage(page);
+  });
+
+  const pdfBytes = await newPdf.save();
+
+  return new Blob(
+    [pdfBytes],
+    { type: "application/pdf" }
+  );
+}
 
 function resetSteps() {
   setStep(0, "active");
