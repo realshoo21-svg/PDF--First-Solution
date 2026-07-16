@@ -430,7 +430,23 @@ console.log(document.getElementById("endPage"));
   downloadBtn.download =
     `pages-${startPage}-${endPage}.pdf`;
 }
+      
+else if (
+  activeTool === "pdf-rotation"
+) {
 
+  outputBlob =
+    await rotatePdf(selectedFile);
+
+  downloadUrl =
+    URL.createObjectURL(outputBlob);
+
+  downloadBtn.href =
+    downloadUrl;
+
+  downloadBtn.download =
+    "rotated.pdf";
+}
     else {
 
       throw new Error(
