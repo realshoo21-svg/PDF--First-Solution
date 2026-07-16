@@ -108,6 +108,17 @@ if (
 ) {
   rotateOptions.style.display = "block";
 }
+const rotateAngle =
+  document.getElementById("rotateAngle");
+
+if (rotateAngle) {
+  rotateAngle.addEventListener(
+    "click",
+    (e) => {
+      e.stopPropagation();
+    }
+  );
+}
 let selectedFile = null;
 let downloadUrl = null;
 
