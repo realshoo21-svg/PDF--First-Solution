@@ -197,6 +197,29 @@ async function mergePdfs(files) {
       mergedPdf.addPage(page);
     });
   }
+  async function rotatePdf(file) {
+
+  const bytes = await file.arrayBuffer();
+
+  const pdfDoc =
+    await PDFLib.PDFDocument.load(bytes);
+
+  pdfDoc.getPages().forEach(page => {
+    page.setRotation(
+      PDFLib.degrees(90)
+    );
+  });
+
+  const pdfBytes =
+    await pdfDoc.save();
+
+  return new Blob(
+    [pdfBytes],
+    {
+      type: "application/pdf"
+    }
+  );
+}
 
   const mergedBytes = await mergedPdf.save();
 
