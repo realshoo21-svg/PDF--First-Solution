@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://realshoo21-svg.github.io/PDF--First-Solution/pdf-first-solution/sitemap.xml
